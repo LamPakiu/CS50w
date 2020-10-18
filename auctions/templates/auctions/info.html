@@ -1,0 +1,98 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <h2>{{ info.title }}</h2>
+    {% if info.owner == user %}
+    <form method="POST" action="{% url 'close' info.id %}">
+      {% csrf_token %}
+      <input type="submit" class="btn btn-outline-danger" id="close" value="Close Listing">
+    </form>
+    {% endif %}
+    {% if messages %}
+    {% for message in messages %}
+     {% if "success" in message.tags %}
+    <div class="alert alert-success alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {{ message }}
+    </div>
+    {% endif %}
+    {% if "error" in message.tags %}
+    <div class="alert alert-danger alert-dismissible" role="alert">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {{ message }}
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% if user.is_authenticated %}
+       {% if watchlist %}
+       <form action="{% url 'addw' info.id %}" method="POST">
+        {% csrf_token %}
+           <input type="submit" class="btn btn-primary btn-sm" value="Add to watchlist">
+       </form>
+       {% else %}
+       <form action="{% url 'removew' info.id %}" method="POST">
+        {% csrf_token %}
+        <input type="submit" class="btn btn-danger btn-sm" value="Remove from watchlist">
+       </form>
+       {% endif %}
+      {% endif %}
+       <div id="place" >
+       </div>
+        <img  id="images" src="{{ info.images }}" width='500'> 
+        <div id="contents">Description: {{ info.contents }}</div>
+        
+        <hr id='rule'>
+        {% if info.status %}
+        <h3>Current bid: ${{ bids.bid }}</h3>
+        {% if user.is_authenticated %}
+        <form action="{% url 'bid' info.id %}" method="POST">
+          {% csrf_token %}
+         <input type="number" name="bid" value="{{ bids.bid }}">
+         <input type="submit" class="btn btn-primary btn-sm" value="Place Bid">
+        </form>
+        {% endif %}
+        {% else %}
+        <h4>Listing sold for ${{ bids.bid }}.</h4>
+         {% if bids.user == user %}
+         <h4>Congratulations {{ bids.user }}! You won the auction!</h4>
+         {% endif %}
+        {% endif %}
+
+        <hr id="rule">
+        <div>Category: {{ info.category }}</div>
+        <div>Owner: {{ info.owner }}</div>
+
+        <hr id='rule'>
+        <h5>Add a comment:
+        </h5>
+        {% if user.is_authenticated %}
+        <form action="{% url 'comment' info.id %}" method="POST" name='comment'>
+             {% csrf_token %}
+             <div class="form-group">
+                 <textarea id="area" rows="1" cols="70" name='comment' ></textarea>
+             </div>
+             <input type="submit" class="btn btn-primary btn-sm" value="submit">
+        </form>
+        {% else %}
+        Log in to make a comment!
+        {% endif %}
+        <hr id='rule'>
+        {% if comments %}
+         {% for c in comments %}
+         <div class="container">
+         <div  class="card">
+           <div class="card-header">
+            <p class="card-text"><small class="text-muted">From {{ c.user }}</small></p>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">{{ c.comment }}</h5>
+          </div>
+          </div>
+        </div>
+          {% endfor %}
+        {% else %}
+          No comments.
+        {% endif %}   
+{% endblock %}

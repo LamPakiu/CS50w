@@ -1,0 +1,35 @@
+{% extends "auctions/layout.html" %}
+
+{% block title %}
+    Create a new listing
+{% endblock %}
+
+{% block body %}
+    <form action='{% url "create" %}' method="POST">
+        {% csrf_token %}
+        <h2>Create a new listing:</h2>
+        <h6 class="post-title">Title:
+            <textarea rows='1' cols='100' name='title'></textarea>
+        </h6>
+            <h6><div>Contents:</div>
+                <textarea cols="100" rows="10" name='contents'></textarea>
+            </h6>
+            <p></p>
+            Image url:<input type=url name='images'>
+            <p></p>
+            <label for='choice'>category</label>
+            <select  name='category'>
+                <option>Books</option>
+                <option>Clothing, Shoes & Accessories</option>
+                <option>Collectibles</option>
+                <option>Sporting Goods</option>
+                <option>Toys & Hobbies</option>
+                <option>Computers & Networking</option>
+            </select>
+            <p></p>
+            <label for="price" name='price'>Starting Price(USD)</label>
+            <input type= "number" name="price" min=1 max=999999999> 
+        <p></p>
+        <input class="save btn btn-dark" type="submit" value="Save"/>
+    </form>
+{% endblock %}

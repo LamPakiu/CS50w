@@ -1,0 +1,20 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+   <h2>Active Listings</h2>
+
+	{% for createlisting in listings %}
+	<a href='{% url "info" id=createlisting.id %}'><div id="listing">
+	<hr id="rule">
+	<img  id="images" src="{{ createlisting.images }}" width="500" height="40%"> 
+	<h4 id="words">{{ createlisting.title }}</h4>
+	</a>
+	<div id="contents">{{ createlisting.contents }}</div>
+	<div>Current Bid:${{createlisting.price}}</div>
+	<div>Category:{{createlisting.category}}</div>
+	<br>
+	</div>	
+	{% endfor %}
+
+{% endblock %}

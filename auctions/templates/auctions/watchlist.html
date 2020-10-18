@@ -1,0 +1,18 @@
+{% extends "auctions/layout.html" %}
+{% load static %}
+
+{% block body %}
+{% if user.is_authenticated %}
+ <h2>{{ user.username }}'s watchlist</h2>
+ {% for w in listings %}
+ <ul>
+  <li><a href="{% url 'info' id=w.listingid.id %}">{{ w.listingid }}</a></li>
+ </ul>
+   {% empty %}
+   No listings found in your watchlist...
+  {% endfor %}
+{% else %}
+Log in to add listings to your watchlist!
+{% endif %}
+
+{% endblock %}
