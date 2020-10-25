@@ -1,0 +1,21 @@
+textarea {
+    min-height: 400px;
+}
+
+.pad{
+    padding: 20px;
+}
+
+#emailbox
+{
+    box-sizing: border-box;
+    margin : 0px;
+    width: 100%;   
+    border: 1px solid black;
+    padding : 10px;
+}
+
+#pre {
+    font-family: Arial,sans-serif;
+    font-size: 1rem;
+}
