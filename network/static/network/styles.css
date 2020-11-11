@@ -1,0 +1,28 @@
+body {
+    padding: 10px;
+}
+
+.pad {
+    padding: 10px;
+}
+
+.right{
+    position: absolute;
+    left: 1000px;
+    top: 65px;
+}
+
+.reght{
+    position: absolute;
+    left: 1140px;
+    top: 65px;
+}
+
+.center{
+    text-align: center;
+}
+
+.fa-heart {
+    font-size: 18px;
+    color: red;
+}

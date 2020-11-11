@@ -1,0 +1,92 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <h1><div style="color:#00008B;">{{ account.username }}'s</div> Profile</h1>
+    <div>
+        {% if account != user %}
+            {% if follower == False %}
+                <form method="POST" action="{% url 'follow' account %}">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-primary btn-sm" value="Follow">
+                </form>
+            {% else %}
+                <form method="POST" action="{% url 'unfollow' account %}">
+                    {% csrf_token %}
+                    <input type="submit" class="btn btn-danger btn-sm" value="unfollow">
+                </form>
+            {% endif %}
+        {% endif %}
+    </div>
+    <div class="center">
+        <h3 class="right">
+        <div id="followercount">{{ followers }}</div>
+        <div>Followers</div>
+        </h3>
+    </div>
+    <div class="center">
+        <h3 class="reght">
+        <div id="followercount">{{ following }}</div>
+        <div>Following</div>
+        </h3>
+    </div>
+    <hr>
+    {% for post in posts %}
+    <div class="pad">
+        <div class="card">
+            <div class="card-header">
+                <h3>{{ post.user}}</h3>
+            </div>
+            <div class="card-body">
+                <div id="card-body-{{post.id}}">{{ post.body }}</div>
+                <small class="text-muted">{{ post.time }}</small>
+                {% if post.user == user %}
+                    <button onclick=editpost({{post.id}}) class="btn btn-outline-primary btn-sm">Edit</button>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    {% if post in liked_posts %}
+                        <i onclick="likepost(this, '{{ post.id }}')" data-postid="{{ post.id }}" data-userid="{{ user.id }}" id="#likes-{{post.id}}" class="fa fa-heart"></i>
+                        <b id="likes-{{ post.id }}">{{ post.likes.count }} Likes</b>
+                    {% else %}
+                        <i onclick="likepost(this, '{{ post.id }}')" data-postid="{{ post.id }}" data-userid="{{ user.id }}" class="fa fa-heart-o"></i>
+                        <b id="likes-{{ post.id }}">{{ post.likes.count }} Likes</b>
+                    {% endif %}
+                {% else %}
+                    Login to like posts
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% empty %}
+        Wow. Such empty
+    {% endfor %}
+        <nav aria-label="Post page navigation">
+        <ul class="pagination justify-content-center">
+            {% if posts.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ posts.previous_page_number }}" tabindex="-1">Previous</a>
+                </li>
+            {% else %}
+
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+            {% endif %}
+
+            {% if posts.has_next %}
+
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ posts.next_page_number }}" tabindex="-1">Next</a>
+                </li>
+
+            {% else %}
+
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Next</a>
+                </li>
+
+            {% endif %}
+
+        </ul>
+    </nav>
+{% endblock %}

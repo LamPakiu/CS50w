@@ -1,0 +1,78 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <h1>{{ title }}</h1>
+    <div class="pad">
+    <div class="card">
+        <div class="card-header">
+            <h2>New Post</h2>
+            <form action="{% url 'create' %}" method="POST">
+                {% csrf_token %}
+                <textarea cols="160" rows="4" name="body" placeholder="Whats happening?"></textarea>
+                <input type="submit" class="save btn btn-primary" value="Post">
+            </form>
+        </div>
+    </div>
+    </div>
+
+    {% for post in posts %}
+    <div class="pad">
+        <div class="card">
+            <div class="card-header">
+                <a href="/users/{{post.user}}" style="color:#00008B;"><h3>{{ post.user}}</h3></a>
+            </div>
+            <div class="card-body">
+                <div id="card-body-{{post.id}}">{{ post.body }}</div>
+                <small class="text-muted">{{ post.time }}</small>
+                {% if post.user == user %}
+                    <button onclick=editpost({{post.id}}) class="btn btn-outline-primary btn-sm">Edit</button>
+                {% endif %}
+                {% if user.is_authenticated %}
+                    {% if post in liked_posts %}
+                        <i onclick="likepost(this, '{{ post.id }}')" data-postid="{{ post.id }}" data-userid="{{ user.id }}" id="#likes-{{post.id}}" class="fa fa-heart"></i>
+                        <b id="likes-{{ post.id }}">{{ post.likes.count }} Likes</b>
+                    {% else %}
+                        <i onclick="likepost(this, '{{ post.id }}')" data-postid="{{ post.id }}" data-userid="{{ user.id }}" class="fa fa-heart-o"></i>
+                        <b id="likes-{{ post.id }}">{{ post.likes.count }} Likes</b>
+                    {% endif %}
+                {% else %}
+                    Login to like posts
+                {% endif %}
+            </div> 
+        </div>
+    </div>
+    {% empty %}
+        Wow. Such empty
+    {% endfor %}
+
+    <nav aria-label="Post page navigation">
+        <ul class="pagination justify-content-center">
+            {% if posts.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ posts.previous_page_number }}" tabindex="-1">Previous</a>
+                </li>
+            {% else %}
+
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+            {% endif %}
+
+            {% if posts.has_next %}
+
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ posts.next_page_number }}" tabindex="-1">Next</a>
+                </li>
+
+            {% else %}
+
+                <li class="page-item disabled">
+                    <a class="page-link" href="#" tabindex="-1">Next</a>
+                </li>
+
+            {% endif %}
+
+        </ul>
+    </nav>
+{% endblock %}
